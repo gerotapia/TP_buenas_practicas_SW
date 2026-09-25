@@ -21,7 +21,7 @@ void nuevos_datos(struct enlaces *MisEnlaces) //La funcion recibe la direccion d
 }
 int main()
 {
-	int i,desicion,cantidad_enlaces,enlaces_agregados,salir; //Declaramos las variables que usaremos
+	int i,desicion,cantidad_enlaces,enlaces_agregados,enlaces_realizados,salir; //Declaramos las variables que usaremos
 	//Inicializamos en cero las variables
 	salir=0;
 	cantidad_enlaces=0;
@@ -45,20 +45,25 @@ int main()
 				{
 					nuevos_datos(&MisEnlaces[i]); //Que con aritmetica de punteros seria MisEnlaces+i
 				}
-				//Llamamos a la función para agregar datos de dichos enlaces
+				enlaces_realizados=cantidad_enlaces;
 			}
 			else
 			{
 			//En caso de que el usuario desee seguir agregando enlaces	
 			printf("Cuántos enlaces desea agregar?\n");
 			scanf("%d",&enlaces_agregados);
-			cantidad_enlaces=cantidad_enlaces+enlaces_agregados;
 			//Vamos a declarar un arreglo dinámico auxiliar para evitar que perdamos los enlaces ya guardados en el arreglo original, en el supuesto caso de que no haya memoria suficiente
-			struct enlaces *agregar = (struct enlaces*)realloc(MisEnlaces,cantidad_enlaces * sizeof(struct enlaces));
+			struct enlaces *agregar = (struct enlaces*)realloc(MisEnlaces,(cantidad_enlaces + enlaces_agregados) * sizeof(struct enlaces));
 			if(agregar != NULL) //Validamos que haya memoria disponible para agrandar el arreglo dinamico de estructuras
 				{
+					cantidad_enlaces = cantidad_enlaces + enlaces_agregados;
 					MisEnlaces = agregar; //Agrandamos, oficilmente, la memoria disponible del arreglo dinamico
-			//LLamar a la funcion para agregar datos de los enlaces, teniendo en cuenta que ya se agregaron los del comienzo
+					for(i=enlaces_realizados;i<cantidad_enlaces;i++)
+					{
+						nuevos_datos(&MisEnlaces[i]);
+						enlaces_realizados++;
+					}
+					//LLamar a la funcion para agregar datos de los enlaces, teniendo en cuenta que ya se agregaron los del comienzo
 				}
 			}
 		break;
@@ -69,7 +74,7 @@ int main()
 		salir = 1;
 		break;	
 		default:
-		printf("Por favot, selecciona una de las opciones del menú");
+		printf("Por favor, selecciona una de las opciones del menú");
 		}
 	} while(salir !=1);
 free(MisEnlaces); //Liberamos la memoria del arreglo dinamico
