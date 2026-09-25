@@ -7,9 +7,21 @@ struct enlaces //Declaramos la estructura que solicita el enunciado
 	int FrecuenciaGhz, PotenciaTx;
 	char NombreEnlace[20];
 	};
+void nuevos_datos(struct enlaces *MisEnlaces) //La funcion recibe la direccion de memoria de la posicion i que determina el main
+{
+	char nombre_temp[20];
+	printf("Ingrese los datos a guardar en el enlace correspondiente, en el siguiente orden:\n-Frecuencia(en Ghz) -Potencia(en Watts) -Nombre del enlace(sin espacios)\n");
+	//Recibimos los datos del usuario y los gardamos en variables temporales
+	//En los tres casos usamos operador flecha porque estamos utilizando un puntero a una estructura, y queremos entrar en ella para guardar los datos correspondientes
+	scanf("%d",&MisEnlaces->FrecuenciaGhz);
+	scanf("%d",&MisEnlaces->PotenciaTx);
+	scanf("%s",nombre_temp);
+	strcpy(MisEnlaces->NombreEnlace,nombre_temp);
+	
+}
 int main()
 {
-	int desicion,cantidad_enlaces,enlaces_agregados,salir; //Declaramos las variables que usaremos
+	int i,desicion,cantidad_enlaces,enlaces_agregados,salir; //Declaramos las variables que usaremos
 	//Inicializamos en cero las variables
 	salir=0;
 	cantidad_enlaces=0;
@@ -28,6 +40,11 @@ int main()
 				printf("Ingrese cuantos enlaces desea");
 				scanf("%d",&cantidad_enlaces);
 				MisEnlaces = (struct enlaces*)malloc(cantidad_enlaces * sizeof(struct enlaces)); //Reservamos la memoria para esa cantidad de enlaces
+				//Con el siguiente for lo que haremos es pasarle a la función la direccion de memoria de cada enlace en el arreglo dinámico 
+				for(i=0;i<cantidad_enlaces;i++)
+				{
+					nuevos_datos(&MisEnlaces[i]); //Que con aritmetica de punteros seria MisEnlaces+i
+				}
 				//Llamamos a la función para agregar datos de dichos enlaces
 			}
 			else
