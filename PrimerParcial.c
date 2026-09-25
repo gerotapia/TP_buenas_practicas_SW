@@ -19,9 +19,22 @@ void nuevos_datos(struct enlaces *MisEnlaces) //La funcion recibe la direccion d
 	strcpy(MisEnlaces->NombreEnlace,nombre_temp);
 	
 }
+void potencia_cercana(struct enlaces *MisEnlaces,float potencia_central,int i)
+{
+	float rango_cercania,cercania_menor,cercania_mayor;
+	rango_cercania=((10*potencia_central)/100.0);
+	cercania_menor=potencia_central-rango_cercania;
+	cercania_mayor=potencia_central+rango_cercania;
+	if(MisEnlaces->PotenciaTx>=cercania_menor && MisEnlaces->PotenciaTx<=cercania_mayor)
+	{
+		printf("Datos del enlace: Nombre: %s\t Potencia: %d\t Frecuencia: %d\n",MisEnlaces->NombreEnlace,MisEnlaces->PotenciaTx,MisEnlaces->FrecuenciaGhz); 
+	}
+}
 int main()
 {
+	printf("Bienvenido\n");
 	int i,desicion,cantidad_enlaces,enlaces_agregados,enlaces_realizados,salir; //Declaramos las variables que usaremos
+	float potencia_central;
 	//Inicializamos en cero las variables
 	salir=0;
 	cantidad_enlaces=0;
@@ -30,14 +43,14 @@ int main()
 	struct enlaces *MisEnlaces = NULL; //Este puntero se comportará como un arreglo de estructuras dinámico, porque se van a ir agregando la cantidad de enlaces que el usuario quiera
 	do{ //Comenzamos el bucle principal
 		//Armamos el menú para el usuario
-		printf("Bienvenido. Seleccione qué acción desea realizar:\n 1.Agregar Enlaces 2.Buscar enlaces por potencia 3.Salir\n");
+		printf("Seleccione qué acción desea realizar:\n 1.Agregar Enlaces 2.Buscar enlaces por potencia 3.Salir\n");
 		scanf("%d",&desicion);
 		switch(desicion)
 		{
 		case 1:
 			if(cantidad_enlaces==0) //Solo se ejecuta si es la primera vez que se inicia el programa
 			{
-				printf("Ingrese cuantos enlaces desea");
+				printf("Ingrese cuantos enlaces desea: ");
 				scanf("%d",&cantidad_enlaces);
 				MisEnlaces = (struct enlaces*)malloc(cantidad_enlaces * sizeof(struct enlaces)); //Reservamos la memoria para esa cantidad de enlaces
 				//Con el siguiente for lo que haremos es pasarle a la función la direccion de memoria de cada enlace en el arreglo dinámico 
@@ -63,11 +76,17 @@ int main()
 						nuevos_datos(&MisEnlaces[i]);
 						enlaces_realizados++;
 					}
-					//LLamar a la funcion para agregar datos de los enlaces, teniendo en cuenta que ya se agregaron los del comienzo
 				}
 			}
 		break;
 		case 2:
+		printf("Seleccione la potencia central\n");
+		scanf("%f",&potencia_central);
+		printf("El rango de cercanía será de +-10 porciento a la potencia seleccionada\nA continuacion se mostraran los enlaces cercanos\n");
+		for(i=0;i<cantidad_enlaces;i++)
+		{
+			potencia_cercana(&MisEnlaces[i],potencia_central,i);
+		}
 		break;
 		case 3:
 		printf("Ha decidido salir");
