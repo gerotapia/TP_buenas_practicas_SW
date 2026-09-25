@@ -9,24 +9,26 @@ struct enlaces //Declaramos la estructura que solicita el enunciado
 	};
 void nuevos_datos(struct enlaces *MisEnlaces) //La funcion recibe la direccion de memoria de la posicion i que determina el main
 {
-	char nombre_temp[20];
+	char nombre_temp[20]; //Declaramos esta variable para guardar el nombre del enlace temporalmente
 	printf("Ingrese los datos a guardar en el enlace correspondiente, en el siguiente orden:\n-Frecuencia(en Ghz) -Potencia(en Watts) -Nombre del enlace(sin espacios)\n");
-	//Recibimos los datos del usuario y los gardamos en variables temporales
 	//En los tres casos usamos operador flecha porque estamos utilizando un puntero a una estructura, y queremos entrar en ella para guardar los datos correspondientes
+	//Guardamos los datos ingresaos por el usuario en el enlace correspondiente
 	scanf("%d",&MisEnlaces->FrecuenciaGhz);
 	scanf("%d",&MisEnlaces->PotenciaTx);
 	scanf("%s",nombre_temp);
 	strcpy(MisEnlaces->NombreEnlace,nombre_temp);
 	
 }
-void potencia_cercana(struct enlaces *MisEnlaces,float potencia_central,int i)
+void potencia_cercana(struct enlaces *MisEnlaces,float potencia_central) //La funcion recibe la direccion de memoria del enlace especifico
 {
-	float rango_cercania,cercania_menor,cercania_mayor;
-	rango_cercania=((10*potencia_central)/100.0);
-	cercania_menor=potencia_central-rango_cercania;
+	float rango_cercania,cercania_menor,cercania_mayor; //Declaramos estas variables para realizar la aritmetica de la potencia central
+	//Con las siguientes tres lineas hacemos la aritmetica para poder encontrar las potencias cercanas a la seleccionada
+	rango_cercania=((10*potencia_central)/100.0); //Usamos regla de tres
+	cercania_menor=potencia_central-rango_cercania; //Esta linea y la siguinte definen los "extremos" del intervalo de cercanía
 	cercania_mayor=potencia_central+rango_cercania;
-	if(MisEnlaces->PotenciaTx>=cercania_menor && MisEnlaces->PotenciaTx<=cercania_mayor)
+	if(MisEnlaces->PotenciaTx>=cercania_menor && MisEnlaces->PotenciaTx<=cercania_mayor) //Verificamos que la potencia del enlace en iteracion esté dentro del intervalo de cercanía
 	{
+		//Mostramos los datos de aquellos enlaces que cumplen con la condicion de cercanía
 		printf("Datos del enlace: Nombre: %s\t Potencia: %d\t Frecuencia: %d\n",MisEnlaces->NombreEnlace,MisEnlaces->PotenciaTx,MisEnlaces->FrecuenciaGhz); 
 	}
 }
@@ -34,8 +36,7 @@ int main()
 {
 	printf("Bienvenido\n");
 	int i,desicion,cantidad_enlaces,enlaces_agregados,enlaces_realizados,salir; //Declaramos las variables que usaremos
-	float potencia_central;
-	//Inicializamos en cero las variables
+	float potencia_central; //Variable necesaria para que el usuario indique la potencia a la cual buscaremos potencias cercanas en un cierto intervalo
 	salir=0;
 	cantidad_enlaces=0;
 	enlaces_agregados=0;
@@ -56,7 +57,8 @@ int main()
 				//Con el siguiente for lo que haremos es pasarle a la función la direccion de memoria de cada enlace en el arreglo dinámico 
 				for(i=0;i<cantidad_enlaces;i++)
 				{
-					nuevos_datos(&MisEnlaces[i]); //Que con aritmetica de punteros seria MisEnlaces+i
+					//Enviamos,por referencia, la direccion de memoria de cada enlace a la función
+					nuevos_datos(&MisEnlaces[i]); //Que con aritmetica de punteros sería: MisEnlaces+i
 				}
 				enlaces_realizados=cantidad_enlaces;
 			}
@@ -81,19 +83,19 @@ int main()
 		break;
 		case 2:
 		printf("Seleccione la potencia central\n");
-		scanf("%f",&potencia_central);
-		printf("El rango de cercanía será de +-10 porciento a la potencia seleccionada\nA continuacion se mostraran los enlaces cercanos\n");
-		for(i=0;i<cantidad_enlaces;i++)
+		scanf("%f",&potencia_central); //El usuario selecciona la potencia central 
+		printf("El rango de cercanía será de +-10 porciento a la potencia seleccionada\nA continuacion se mostraran los enlaces cercanos\n"); //El porcentaje es seleccionado arbitrariamente por el programador (yo).
+		for(i=0;i<cantidad_enlaces;i++) //Con este bucle enviamos cada enlace a la funcion para ver si está dentro del intervalo de cercanía de la potencia que el usuario eligió
 		{
-			potencia_cercana(&MisEnlaces[i],potencia_central,i);
+			potencia_cercana(&MisEnlaces[i],potencia_central); //Enviamos la direccion de cada enlace por referencia
 		}
 		break;
 		case 3:
 		printf("Ha decidido salir");
-		salir = 1;
+		salir = 1; //Variable "bandera" para salir del bucle del switch.
 		break;	
 		default:
-		printf("Por favor, selecciona una de las opciones del menú");
+		printf("Por favor, selecciona una de las opciones del menú"); //En caso de haber seleccionado un número fuera de las opciones del menú
 		}
 	} while(salir !=1);
 free(MisEnlaces); //Liberamos la memoria del arreglo dinamico
